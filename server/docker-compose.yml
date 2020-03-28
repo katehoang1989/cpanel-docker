@@ -1,0 +1,47 @@
+version: '3'
+services:
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: dockerfile.web
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ../code:/var/www/html:cached
+    links:
+      - mysql
+      - phpmyadmin
+      - redis
+  mysql:
+    container_name: mysql
+    build:
+      context: .
+      dockerfile: dockerfile.mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: igotthepower
+    volumes:
+      - ../data/mysql:/var/lib/mysql:cached
+  phpmyadmin:
+    container_name: phpmyadmin
+    build:
+      context: .
+      dockerfile: dockerfile.phpmyadmin
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_ROOT_PASSWORD: igotthepower
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: igotthepower
+  redis:
+    container_name: redis
+    build:
+      context: .
+      dockerfile: dockerfile.redis
+    ports:
+      - 6379:6379
